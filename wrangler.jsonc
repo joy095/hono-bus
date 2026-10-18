@@ -1,0 +1,60 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hono-bus",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-18",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // npx wrangler hyperdrive create bus-db --connection-string="postgres://user:pass@host:5432/db"
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "REPLACE_WITH_HYPERDRIVE_ID",
+      "localConnectionString": "postgres://postgres:admin@localhost:5432/bus_tracking",
+    },
+  ],
+
+  "durable_objects": {
+    "bindings": [{ "name": "LIVE_HUB", "class_name": "LiveHub" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LiveHub"] }],
+
+  "vars": {
+    "LOG_LEVEL": "info",
+    "LIVE_TICK_MS": "500", // WebSocket fan-out interval
+    "PERSIST_MS": "15000", // how often latest-position snapshots are saved in the DO
+    "STOP_REFRESH_MS": "60000", // how often the DO reloads bus_stops from Postgres
+    "STOP_EXIT_MARGIN_M": "30", // hysteresis: bus must be radius+margin away to count as departed
+    "STOP_STALE_MS": "600000", // no ping for this long while "at a stop" => visit closed at last ping
+    "STOP_ARRIVE_MAX_KMH": "0", // >0: ignore buses passing a stop faster than this (0 = off)
+    // Optional secret for POST endpoints:  npx wrangler secret put INGEST_TOKEN
+    "BETTER_AUTH_SECRET": "1ne5G2ARWvjXhgZbHWP9Lz6eM6paRMkh",
+    "BETTER_AUTH_URL": "http://localhost:8787", // Base URL of the app
+  },
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "MY_KV_NAMESPACE",
+  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //   }
+  // ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "MY_BUCKET",
+  //     "bucket_name": "my-bucket"
+  //   }
+  // ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "MY_DB",
+  //     "database_name": "my-database",
+  //     "database_id": ""
+  //   }
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+}
