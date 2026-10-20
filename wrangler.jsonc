@@ -30,6 +30,8 @@
     // Optional secret for POST endpoints:  npx wrangler secret put INGEST_TOKEN
     "BETTER_AUTH_SECRET": "1ne5G2ARWvjXhgZbHWP9Lz6eM6paRMkh",
     "BETTER_AUTH_URL": "http://localhost:8787", // Base URL of the app
+    "ADMIN_EMAILS": "joykarmakar852@gmail.com,joykarmakar987654321@gmail.com",
+    "DATABASE_URL": "postgres://postgres:admin@localhost:5432/bus_tracking",
   },
   // "kv_namespaces": [
   //   {

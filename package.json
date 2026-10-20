@@ -4,7 +4,7 @@
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "auth:generate": "bunx @better-auth/cli generate --config ./src/lib/auth.ts",
+    "auth:generate": "bunx auth@latest generate --config ./src/lib/auth-cli.ts --adapter drizzle --dialect postgresql",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"

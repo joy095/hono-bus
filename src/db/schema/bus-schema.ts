@@ -7,7 +7,9 @@ import {
   timestamp,
   index,
   unique,
+  primaryKey,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth-schema";
 
 export const buses = pgTable("buses", {
   id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
@@ -46,4 +48,19 @@ export const busStopVisits = pgTable(
     unique("bus_stop_visits_bus_id_arrived_at_key").on(t.busId, t.arrivedAt),
     index("idx_visits_stop_time").on(t.stopId, t.arrivedAt.desc()),
   ],
+);
+
+/** Which signed-in users (drivers) may publish live location for which bus. Admins may publish for any bus. */
+export const busDrivers = pgTable(
+  "bus_drivers",
+  {
+    busId: bigint("bus_id", { mode: "number" })
+      .notNull()
+      .references(() => buses.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.busId, t.userId] }), index("idx_bus_drivers_user").on(t.userId)],
 );
